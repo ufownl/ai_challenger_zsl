@@ -1,0 +1,43 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dependencies files
+*.d
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+a_animals_pre_train
+
+# Vim SWP files
+*.swp
+
+# macOS useless files
+.DS_Store
+
+# Others
+ai_challenger_zsl2018_train_test_a_20180321/
+*.state
+*.resnet34
