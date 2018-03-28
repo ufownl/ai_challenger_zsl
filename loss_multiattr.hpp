@@ -9,8 +9,8 @@
 
 class loss_multiattr_ {
 public:
-  using training_label_type = dlib::matrix<float>;
-  using output_label_type = dlib::matrix<float>;
+  using training_label_type = dlib::matrix<float, 0, 1>;
+  using output_label_type = dlib::matrix<float, 0, 1>;
 
   template <class Subnet, class LabelIterator>
   void to_label(const dlib::tensor& input_tensor,
