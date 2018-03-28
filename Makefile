@@ -3,7 +3,7 @@ LD				= g++
 CXXFLAGS	= -std=c++11 -Wall -O3 -mavx -ftemplate-depth=1024
 LDFLAGS		= -ldlib -lblas -llapack -pthread
 SOURCES		= $(wildcard *.cpp)
-TARGETS		= a_animals_pre_train
+TARGETS		= $(SOURCES:.cpp=)
 
 all: $(TARGETS)
 

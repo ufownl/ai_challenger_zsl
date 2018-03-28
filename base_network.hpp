@@ -58,4 +58,31 @@ public:
   using testing_type = dlib::fc<Size,dlib::avg_pool_everything<alevel1<alevel2<alevel3<alevel4<dlib::max_pool<3,3,2,2,dlib::relu<dlib::affine<dlib::con<64,7,7,2,2,dlib::input_rgb_image_sized<227>>>>>>>>>>>;
 };
 
+struct zero_learning_rate {
+  template <class T>
+  void operator()(size_t idx, T& net) {
+    do_call(net);
+  }
+
+private:
+  template <class T>
+  auto visit(T& layer) -> decltype(layer.set_learning_rate_multiplier(0.0), layer.set_bias_learning_rate_multiplier(0.0), std::declval<void>()) {
+    layer.set_learning_rate_multiplier(0.0);
+    layer.set_bias_learning_rate_multiplier(0.0);
+  }
+
+  void visit(...) {
+    // nop
+  }
+
+  template <class T>
+  auto do_call(T& net) -> decltype(net.layer_details(), std::declval<void>()) {
+    visit(net.layer_details());
+  }
+
+  void do_call(...) {
+    // nop
+  }
+};
+
 #endif  // AI_CHALLENGER_ZSL_BASE_NETWORK_HPP

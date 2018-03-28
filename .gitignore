@@ -30,6 +30,7 @@
 *.out
 *.app
 a_animals_pre_train
+a_animals_train
 
 # Vim SWP files
 *.swp
