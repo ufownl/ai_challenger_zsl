@@ -27,17 +27,15 @@ int main(int argc, char* argv[]) {
   auto images = load_image_attributes(images_in, 123);
   std::cout << "images in dataset: " << images.size() << std::endl;
 
-  double initial_learning_rate = 0.1;
-  auto weight_decay = 0.0001f;
-  auto momentum = 0.9f;
+  constexpr auto initial_learning_rate = 0.1;
   pre_trained_net pnet;
   dlib::deserialize("a_animals_pre_train.resnet34") >> pnet;
   dlib::visit_layers_range<30, pre_trained_net::num_layers>(pnet, zero_learning_rate{});
   training_net net;
   dlib::layer<3>(net) = dlib::layer<2>(pnet);
-  dlib::dnn_trainer<training_net> trainer(net, dlib::sgd{weight_decay, momentum});
+  dlib::dnn_trainer<training_net> trainer(net, dlib::sgd{0.0001f, 0.9f});
   trainer.be_verbose();
-  trainer.set_learning_rate(0.1);
+  trainer.set_learning_rate(initial_learning_rate);
   trainer.set_synchronization_file("a_animals_train.state", std::chrono::minutes{10});
   trainer.set_iterations_without_progress_threshold(threshold);
   set_all_bn_running_stats_window_sizes(net, 1000);
@@ -64,7 +62,7 @@ int main(int argc, char* argv[]) {
   }
   std::vector<dlib::matrix<dlib::rgb_pixel>> samples;
   std::vector<dlib::matrix<float, 0, 1>> labels;
-  while(trainer.get_learning_rate() >= initial_learning_rate*1e-3) {
+  while(trainer.get_learning_rate() >= initial_learning_rate * 1e-3) {
     while(samples.size() < 64) {
       std::pair<dlib::matrix<dlib::rgb_pixel>, size_t> img;
       data.dequeue(img);
