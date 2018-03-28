@@ -24,12 +24,12 @@ int main(int argc, char* argv[]) {
   auto images = load_image_labels(images_in, load_labels(labels_in));
   std::cout << "images in dataset: " << images.size() << std::endl;
 
-  using net_type = base_network<40>::training_type;
+  using training_net = dlib::loss_multiclass_log<base_network<40>::training_type>;
   double initial_learning_rate = 0.1;
   auto weight_decay = 0.0001f;
   auto momentum = 0.9f;
-  net_type net;
-  dlib::dnn_trainer<net_type> trainer(net, dlib::sgd{weight_decay, momentum});
+  training_net net;
+  dlib::dnn_trainer<training_net> trainer(net, dlib::sgd{weight_decay, momentum});
   trainer.be_verbose();
   trainer.set_learning_rate(0.1);
   trainer.set_synchronization_file("a_animals_pre_train.state", std::chrono::minutes{10});

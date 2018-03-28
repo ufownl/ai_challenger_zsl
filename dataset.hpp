@@ -60,11 +60,11 @@ inline std::vector<std::pair<std::string, size_t>> load_image_labels(
   return ret;
 }
 
-inline std::vector<std::pair<std::string, dlib::matrix<float>>> load_image_attributes(
+inline std::vector<std::pair<std::string, dlib::matrix<float, 0, 1>>> load_image_attributes(
   std::istream& in,
   long attr_num
 ) {
-  std::vector<std::pair<std::string, dlib::matrix<float>>> ret;
+  std::vector<std::pair<std::string, dlib::matrix<float, 0, 1>>> ret;
   for (std::string line; std::getline(in, line); ) {
     auto p = std::find(line.begin(), line.end(), ',');
     if (p == line.end()) {
@@ -91,7 +91,7 @@ inline std::vector<std::pair<std::string, dlib::matrix<float>>> load_image_attri
     dlib::matrix<float, 0, 1> attr(attr_num);
     std::stringstream ss{std::string{attr_l, p}, std::ios_base::out};
     for (auto i = 0l; i < attr_num; ++i) {
-      ss >> attr(i, 0);
+      ss >> attr(i);
     }
     ret.emplace_back(std::string{file_l, file_r}, std::move(attr));
   }

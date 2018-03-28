@@ -53,10 +53,9 @@ private:
   template <class Subnet> using alevel4 = ares<64,ares<64,ares<64,Subnet>>>;
 
 public:
-  using training_type = dlib::loss_multiclass_log<dlib::fc<Size,dlib::avg_pool_everything<level1<level2<level3<level4<dlib::max_pool<3,3,2,2,dlib::relu<dlib::bn_con<dlib::con<64,7,7,2,2,dlib::input_rgb_image_sized<227>>>>>>>>>>>>;
+  using training_type = dlib::fc<Size,dlib::avg_pool_everything<level1<level2<level3<level4<dlib::max_pool<3,3,2,2,dlib::relu<dlib::bn_con<dlib::con<64,7,7,2,2,dlib::input_rgb_image_sized<227>>>>>>>>>>>;
 
-  using testing_type = dlib::loss_multiclass_log<dlib::fc<Size,dlib::avg_pool_everything<alevel1<alevel2<alevel3<alevel4<dlib::max_pool<3,3,2,2,dlib::relu<dlib::affine<dlib::con<64,7,7,2,2,dlib::input_rgb_image_sized<227>>>>>>>>>>>>;
-
+  using testing_type = dlib::fc<Size,dlib::avg_pool_everything<alevel1<alevel2<alevel3<alevel4<dlib::max_pool<3,3,2,2,dlib::relu<dlib::affine<dlib::con<64,7,7,2,2,dlib::input_rgb_image_sized<227>>>>>>>>>>>;
 };
 
 #endif  // AI_CHALLENGER_ZSL_BASE_NETWORK_HPP

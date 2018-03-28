@@ -49,7 +49,7 @@ public:
       auto& y = *truth++;
       for (auto k = 0ll; k < output_tensor.k(); ++k) {
         auto idx = i * output_tensor.k() + k;
-        auto d = out_data[idx] - y(k, 0);
+        auto d = out_data[idx] - y(k);
         loss += scale * d * d;
         g[idx] = scale * d * out_data[idx] * (1.0f - out_data[idx]);
       }
