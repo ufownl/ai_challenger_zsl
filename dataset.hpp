@@ -3,26 +3,26 @@
 
 #include <istream>
 #include <string>
-#include <map>
+#include <vector>
 #include <algorithm>
 
-inline std::map<std::string, size_t> load_labels(
+inline std::vector<std::string> load_labels(
   std::istream& in
 ) {
-  std::map<std::string, size_t> ret;
-  auto label = 0ul;
+  std::vector<std::string> ret;
   for (std::string line; std::getline(in, line); ) {
     auto it = std::find(line.begin(), line.end(), ',');
     if (it != line.end()) {
-      ret.emplace(std::string{line.begin(), it}, label++);
+      ret.emplace_back(line.begin(), it);
     }
   }
+  std::sort(ret.begin(), ret.end());
   return ret;
 }
 
 inline std::vector<std::pair<std::string, size_t>> load_image_labels(
   std::istream& in,
-  const std::map<std::string, size_t> labels
+  const std::vector<std::string> labels
 ) {
   std::vector<std::pair<std::string, size_t>> ret;
   for (std::string line; std::getline(in, line); ) {
@@ -50,11 +50,11 @@ inline std::vector<std::pair<std::string, size_t>> load_image_labels(
     while (*++p == ' ') {
       // nop
     }
-    auto it = labels.find(std::string{label_l, label_r});
+    auto it = std::lower_bound(labels.begin(), labels.end(), std::string{label_l, label_r});
     if (it == labels.end()) {
       continue;
     }
-    ret.emplace_back(std::string{p, line.end()}, it->second);
+    ret.emplace_back(std::string{p, line.end()}, it - labels.begin());
   }
   return ret;
 }
