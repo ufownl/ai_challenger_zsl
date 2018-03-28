@@ -61,26 +61,28 @@ public:
 struct zero_learning_rate {
   template <class T>
   void operator()(size_t idx, T& net) {
-    do_call(net);
+    do_call(net, 0);
   }
 
 private:
   template <class T>
-  auto visit(T& layer) -> decltype(layer.set_learning_rate_multiplier(0.0), layer.set_bias_learning_rate_multiplier(0.0), std::declval<void>()) {
+  auto visit(T& layer, int) -> decltype(layer.set_learning_rate_multiplier(0.0), layer.set_bias_learning_rate_multiplier(0.0), std::declval<void>()) {
     layer.set_learning_rate_multiplier(0.0);
     layer.set_bias_learning_rate_multiplier(0.0);
   }
 
-  void visit(...) {
+  template <class T>
+  void visit(T&, ...) {
     // nop
   }
 
   template <class T>
-  auto do_call(T& net) -> decltype(net.layer_details(), std::declval<void>()) {
-    visit(net.layer_details());
+  auto do_call(T& net, int) -> decltype(net.layer_details(), std::declval<void>()) {
+    visit(net.layer_details(), 0);
   }
 
-  void do_call(...) {
+  template <class T>
+  void do_call(T&, ...) {
     // nop
   }
 };
