@@ -68,6 +68,7 @@ int main(int argc, char* argv[]) {
     samples.clear();
     labels.clear();
   }
+  data.disable();
   for (auto& t: data_loaders) {
     t.join();
   }
