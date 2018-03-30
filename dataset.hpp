@@ -89,7 +89,7 @@ inline std::vector<std::pair<std::string, dlib::matrix<float, 0, 1>>> load_image
       continue;
     }
     dlib::matrix<float, 0, 1> attr(attr_num);
-    std::stringstream ss{std::string{attr_l, p}, std::ios_base::out};
+    std::stringstream ss{std::string{attr_l, p}, std::ios_base::in};
     for (auto i = 0l; i < attr_num; ++i) {
       ss >> attr(i);
     }

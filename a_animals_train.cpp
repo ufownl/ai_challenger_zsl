@@ -40,11 +40,11 @@ int main(int argc, char* argv[]) {
   trainer.set_iterations_without_progress_threshold(threshold);
   set_all_bn_running_stats_window_sizes(net, 1000);
 
-  dlib::pipe<std::pair<dlib::matrix<dlib::rgb_pixel>, size_t>> data{200};
+  dlib::pipe<std::pair<dlib::matrix<dlib::rgb_pixel>, dlib::matrix<float, 0, 1>>> data{200};
   auto load_data = [&data, &images](time_t seed) {
     dlib::rand rnd(std::time(nullptr) + seed);
     while(data.is_enabled()) {
-      auto inf = images[rnd.get_random_32bit_number() % images.size()];
+      auto& inf = images[rnd.get_random_32bit_number() % images.size()];
       dlib::matrix<dlib::rgb_pixel> img;
       load_image(img, "ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_images_20180321/" + inf.first);
       dlib::matrix<dlib::rgb_pixel> crop;
@@ -64,10 +64,10 @@ int main(int argc, char* argv[]) {
   std::vector<dlib::matrix<float, 0, 1>> labels;
   while(trainer.get_learning_rate() >= initial_learning_rate * 1e-3) {
     while(samples.size() < 64) {
-      std::pair<dlib::matrix<dlib::rgb_pixel>, size_t> img;
+      std::pair<dlib::matrix<dlib::rgb_pixel>, dlib::matrix<float, 0, 1>> img;
       data.dequeue(img);
       samples.emplace_back(std::move(img.first));
-      labels.emplace_back(img.second);
+      labels.emplace_back(std::move(img.second));
     }
     trainer.train_one_step(samples, labels);
     samples.clear();
