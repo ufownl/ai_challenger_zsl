@@ -3,6 +3,7 @@
 
 #include <dlib/data_io.h>
 #include <limits>
+#include <numeric>
 
 template <size_t N>
 class validator {
