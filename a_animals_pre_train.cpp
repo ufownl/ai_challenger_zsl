@@ -37,11 +37,11 @@ int main(int argc, char* argv[]) {
 
   dlib::pipe<std::pair<dlib::matrix<dlib::rgb_pixel>, size_t>> data{200};
   auto load_data = [&data, &images](time_t seed) {
-    dlib::rand rnd(std::time(nullptr) + seed);
+    dlib::rand rnd{std::time(nullptr) + seed};
     while(data.is_enabled()) {
       auto& inf = images[rnd.get_random_32bit_number() % images.size()];
       dlib::matrix<dlib::rgb_pixel> img;
-      load_image(img, "ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_images_20180321/" + inf.first);
+      dlib::load_image(img, "ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_images_20180321/" + inf.first);
       dlib::matrix<dlib::rgb_pixel> crop;
       randomly_crop_image(img, crop, rnd);
       data.enqueue(std::make_pair(std::move(crop), inf.second));

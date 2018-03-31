@@ -2,7 +2,7 @@
 #include "loss_multiattr.hpp"
 #include "dataset.hpp"
 #include "randomly_crop.hpp"
-#include <dlib/data_io.h>
+#include "validator.hpp"
 #include <iostream>
 #include <fstream>
 #include <thread>
@@ -42,11 +42,11 @@ int main(int argc, char* argv[]) {
 
   dlib::pipe<std::pair<dlib::matrix<dlib::rgb_pixel>, dlib::matrix<float, 0, 1>>> data{200};
   auto load_data = [&data, &images](time_t seed) {
-    dlib::rand rnd(std::time(nullptr) + seed);
+    dlib::rand rnd{std::time(nullptr) + seed};
     while(data.is_enabled()) {
       auto& inf = images[rnd.get_random_32bit_number() % images.size()];
       dlib::matrix<dlib::rgb_pixel> img;
-      load_image(img, "ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_images_20180321/" + inf.first);
+      dlib::load_image(img, "ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_images_20180321/" + inf.first);
       dlib::matrix<dlib::rgb_pixel> crop;
       randomly_crop_image(img, crop, rnd);
       data.enqueue(std::make_pair(std::move(crop), inf.second));
@@ -82,5 +82,15 @@ int main(int argc, char* argv[]) {
 
   std::cout << "Saving network..." << std::endl;
   dlib::serialize("a_animals_train.resnet34") << net;
+
+  std::cout << "Validating..." << std::endl;
+  validator<123> v{net};
+  v.load_dataset("ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_annotations_label_list_20180321.txt",
+                 "ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_annotations_labels_20180321.txt",
+                 "ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_annotations_attributes_per_class_20180321.txt");
+  v.run("ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_images_20180321/");
+  std::cout << "Right: " << v.right_num() << std::endl;
+  std::cout << "Wrong: " << v.wrong_num() << std::endl;
+  std::cout << "Accuracy: " << static_cast<double>(v.right_num()) / (v.right_num() + v.wrong_num()) << std::endl;
   return 0;
 }
