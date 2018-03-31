@@ -55,7 +55,7 @@ inline std::vector<std::pair<std::string, size_t>> load_image_labels(
     if (it == labels.end()) {
       continue;
     }
-    ret.emplace_back(std::string{p, line.end()}, it - labels.begin());
+    ret.emplace_back(std::string{p, line.end()}, std::distance(labels.begin(), it));
   }
   return ret;
 }
@@ -94,6 +94,36 @@ inline std::vector<std::pair<std::string, dlib::matrix<float, 0, 1>>> load_image
       ss >> attr(i);
     }
     ret.emplace_back(std::string{file_l, file_r}, std::move(attr));
+  }
+  return ret;
+}
+
+inline std::vector<std::pair<std::string, dlib::matrix<float, 0, 1>>> load_label_attributes(
+  std::istream& in,
+  long attr_num
+) {
+  std::vector<std::pair<std::string, dlib::matrix<float, 0, 1>>> ret;
+  for (std::string line; std::getline(in, line); ) {
+    auto p = std::find(line.begin(), line.end(), ',');
+    if (p == line.end()) {
+      continue;
+    }
+    auto label_r = p;
+    p = std::find(p, line.end(), '[');
+    if (p == line.end()) {
+      continue;
+    }
+    auto attr_l = ++p;
+    p = std::find(p, line.end(), ']');
+    if (p == line.end()) {
+      continue;
+    }
+    dlib::matrix<float, 0, 1> attr(attr_num);
+    std::stringstream ss{std::string{attr_l, p}, std::ios_base::in};
+    for (auto i = 0l; i < attr_num; ++i) {
+      ss >> attr(i);
+    }
+    ret.emplace_back(std::string{line.begin(), label_r}, std::move(attr));
   }
   return ret;
 }
