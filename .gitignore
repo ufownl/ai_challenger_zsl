@@ -29,10 +29,8 @@
 *.exe
 *.out
 *.app
-a_animals_pre_train
-a_animals_train
-a_fruits_pre_train
-a_fruits_train
+*_train
+*_test
 
 # Vim SWP files
 *.swp
