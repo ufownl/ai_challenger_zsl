@@ -3,7 +3,6 @@
 
 #include <dlib/data_io.h>
 #include <limits>
-#include <numeric>
 
 template <size_t N>
 class validator {
@@ -34,11 +33,13 @@ public:
       dlib::array<dlib::matrix<dlib::rgb_pixel>> crops;
       randomly_crop_images(img, crops, rnd, 16);
       auto ps = net_(crops);
-      auto p = std::accumulate(ps.begin() + 1, ps.end(), ps.front()) / ps.size();
+      for (auto i = ps.begin() + 1; i != ps.end(); ++i) {
+        ps.front() += *i;
+      }
       auto dis_sqr = std::numeric_limits<float>::max();
       std::string label;
       for (auto& attr: attributes_) {
-        auto t = dlib::length_squared(p - attr.second);
+        auto t = dlib::length_squared(ps.front() - attr.second);
         if (t < dis_sqr) {
           dis_sqr = t;
           label = attr.first;
