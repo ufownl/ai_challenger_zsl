@@ -32,7 +32,8 @@ int main(int argc, char* argv[]) {
     for (auto i = ps.begin() + 1; i != ps.end(); ++i) {
       ps.front() += *i;
     }
-    auto dis_sqr = std::numeric_limits<double>::max();
+    ps.front() /= ps.size();
+    auto dis_sqr = std::numeric_limits<float>::max();
     std::string label;
     for (auto& attr: attributes) {
       auto t = dlib::length_squared(ps.front() - attr.second);

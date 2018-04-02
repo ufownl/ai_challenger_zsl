@@ -36,6 +36,7 @@ public:
       for (auto i = ps.begin() + 1; i != ps.end(); ++i) {
         ps.front() += *i;
       }
+      ps.front() /= ps.size();
       auto dis_sqr = std::numeric_limits<float>::max();
       std::string label;
       for (auto& attr: attributes_) {
