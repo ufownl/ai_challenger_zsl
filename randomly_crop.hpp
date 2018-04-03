@@ -15,7 +15,7 @@ inline dlib::rectangle make_random_cropping_rect(
   dlib::rectangle rect(size, size);
   // randomly shift the box around
   dlib::point offset(rnd.get_random_32bit_number() % (img.nc() - rect.width()),
-                     rnd.get_random_32bit_number()%(img.nr() - rect.height()));
+                     rnd.get_random_32bit_number() % (img.nr() - rect.height()));
   return dlib::move_rect(rect, offset);
 }
 
