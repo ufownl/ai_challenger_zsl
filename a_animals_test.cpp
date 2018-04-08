@@ -20,6 +20,16 @@ int main(int argc, char* argv[]) {
     return 1;
   }
   auto attributes = load_label_attributes(attr_in, 123);
+  std::ifstream labels_in("ai_challenger_zsl2018_train_test_a_20180321/zsl_a_animals_train_20180321/zsl_a_animals_train_annotations_label_list_20180321.txt");
+  if (!labels_in) {
+    std::cerr << "Could not load the training labels." << std::endl;
+    return 1;
+  }
+  auto labels = load_labels(labels_in);
+  attributes.erase(std::remove_if(attributes.begin(), attributes.end(), [&](const std::pair<std::string, dlib::matrix<float, 0, 1>>& v) {
+    auto it = std::lower_bound(labels.begin(), labels.end(), v.first);
+    return it != labels.end() && *it == v.first;
+  }), attributes.end());
   testing_net net;
   dlib::deserialize("a_animals_train.resnet34") >> net;
   dlib::rand rnd{std::time(nullptr)};
