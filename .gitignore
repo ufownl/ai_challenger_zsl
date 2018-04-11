@@ -42,4 +42,4 @@
 ai_challenger_zsl2018_train_test_a_20180321/
 *.state
 *.state_
-*.resnet34
+*.resnet*
