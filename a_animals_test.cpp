@@ -2,6 +2,7 @@
 #include "loss_multiattr.hpp"
 #include "dataset.hpp"
 #include "randomly_crop.hpp"
+#include "k_means.hpp"
 #include <dlib/dir_nav.h>
 #include <dlib/matrix.h>
 #include <dlib/data_io.h>
@@ -30,6 +31,13 @@ int main(int argc, char* argv[]) {
     auto it = std::lower_bound(labels.begin(), labels.end(), v.first);
     return it != labels.end() && *it == v.first;
   }), attributes.end());
+  k_means::point_cloud<float> seeds;
+  seeds.reserve(attributes.size());
+  for (auto i = 0ul; i < attributes.size(); ++i) {
+    seeds.emplace_back(attributes[i].second, i);
+  }
+  k_means::point_cloud<float> points;
+  points.reserve(images.size());
   testing_net net;
   dlib::deserialize("a_animals_train.resnet34") >> net;
   dlib::rand rnd{std::time(nullptr)};
@@ -43,16 +51,11 @@ int main(int argc, char* argv[]) {
       ps.front() += *i;
     }
     ps.front() /= ps.size();
-    auto dis_sqr = std::numeric_limits<float>::max();
-    std::string label;
-    for (auto& attr: attributes) {
-      auto t = dlib::length_squared(ps.front() - attr.second);
-      if (t < dis_sqr) {
-        dis_sqr = t;
-        label = attr.first;
-      }
-    }
-    std::cout << f.name() << " " << label << std::endl;
+    points.emplace_back(ps.front(), 0);
+  }
+  k_means::cluster(attributes.size(), points, seeds, 0.01f);
+  for (auto i = 0ul; i < points.size(); ++i) {
+    std::cout << images[i].name() << " " << attributes[points[i].cluster].first << std::endl;
   }
   return 0;
 }
