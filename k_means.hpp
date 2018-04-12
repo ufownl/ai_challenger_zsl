@@ -39,27 +39,29 @@ using point_cloud = std::vector<point<T>>;
 namespace {
 
 template <class T>
-point_cloud<T> calc_centers(size_t kv, const point_cloud<T>& points) {
-  assert(!points.empty());
+point_cloud<T> calc_centers(const point_cloud<T>& points, const point_cloud<T>& seeds) {
   point_cloud<T> centers;
-  centers.reserve(kv);
-  for (auto i = 0ul; i < kv; ++i) {
+  centers.reserve(seeds.size());
+  for (auto i = 0ul; i < seeds.size(); ++i) {
     centers.emplace_back(points.front().value.nr(), i);
   }
-  std::vector<size_t> pt_cnt(kv);
+  std::vector<size_t> pt_cnt(seeds.size());
   for (auto& pt: points) {
     centers[pt.cluster].value += pt.value;
     ++pt_cnt[pt.cluster];
   }
-  for (auto i = 0ul; i < kv; ++i) {
-    centers[i].value /= pt_cnt[i];
+  for (auto i = 0ul; i < seeds.size(); ++i) {
+    if (pt_cnt[i] > 0) {
+      centers[i].value /= pt_cnt[i];
+    } else {
+      centers[i].value = seeds[i].value;
+    }
   }
   return centers;
 }
 
 template <class T>
 bool is_constrict(const point_cloud<T>& lhs, const point_cloud<T>& rhs, T threshold) {
-  assert(lhs.size() == rhs.size());
   for (auto i = 0ul; i < lhs.size(); ++i) {
     if (dlib::length_squared(lhs[i].value - rhs[i].value) > threshold * threshold) {
       return false;
@@ -71,8 +73,9 @@ bool is_constrict(const point_cloud<T>& lhs, const point_cloud<T>& rhs, T thresh
 }
 
 template <class T>
-point_cloud<T> cluster(size_t kv, point_cloud<T>& points, point_cloud<T> seeds, T threshold) {
+point_cloud<T> cluster(point_cloud<T>& points, point_cloud<T> seeds, T threshold) {
   assert(!points.empty());
+  assert(!seeds.empty());
   for (;;) {
     for (auto& pt: points) {
       auto min_dist = std::numeric_limits<T>::max();
@@ -84,7 +87,7 @@ point_cloud<T> cluster(size_t kv, point_cloud<T>& points, point_cloud<T> seeds, 
         }
       }
     }
-    auto centers = calc_centers(kv, points);
+    auto centers = calc_centers(points, seeds);
     if (is_constrict(centers, seeds, threshold)) {
       return centers;
     }

@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     ps.front() /= ps.size();
     points.emplace_back(ps.front(), 0);
   }
-  k_means::cluster(attributes.size(), points, seeds, 0.01f);
+  k_means::cluster(points, seeds, 0.01f);
   for (auto i = 0ul; i < points.size(); ++i) {
     std::cout << images[i].name() << " " << attributes[points[i].cluster].first << std::endl;
   }
