@@ -13,9 +13,9 @@ using training_net = loss_multiattr<dlib::sig<base_network<58>::training_type>>;
 int main(int argc, char* argv[]) {
   dlib::set_dnn_prefer_smallest_algorithms();
 
-  size_t threshold = 8000;
+  size_t batch_size = 64;
   if (argc >= 2) {
-    threshold = atol(argv[1]);
+    batch_size = atol(argv[1]);
   }
 
   std::cout << "Loading dataset..." << std::endl;
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
   trainer.be_verbose();
   trainer.set_learning_rate(initial_learning_rate);
   trainer.set_synchronization_file("a_fruits_train.state", std::chrono::minutes{10});
-  trainer.set_iterations_without_progress_threshold(threshold);
+  trainer.set_iterations_without_progress_threshold(8000);
   set_all_bn_running_stats_window_sizes(net, 1000);
 
   dlib::pipe<std::pair<dlib::matrix<dlib::rgb_pixel>, dlib::matrix<float, 0, 1>>> data{200};
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
   std::vector<dlib::matrix<dlib::rgb_pixel>> samples;
   std::vector<dlib::matrix<float, 0, 1>> labels;
   while(trainer.get_learning_rate() >= initial_learning_rate * 1e-3) {
-    while(samples.size() < 64) {
+    while(samples.size() < batch_size) {
       std::pair<dlib::matrix<dlib::rgb_pixel>, dlib::matrix<float, 0, 1>> img;
       data.dequeue(img);
       samples.emplace_back(std::move(img.first));
