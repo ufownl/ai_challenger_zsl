@@ -1,7 +1,7 @@
 CXX				= g++
 LD				= g++
 CXXFLAGS	= -std=c++11 -Wall -O3 -mavx -ftemplate-depth=1024
-LDFLAGS		= -ldlib -lblas -llapack -pthread
+LDFLAGS		= -ldlib -lgif -lblas -llapack -pthread
 SOURCES		= $(wildcard *.cpp)
 TARGETS		= $(SOURCES:.cpp=)
 

@@ -40,6 +40,7 @@
 
 # Others
 ai_challenger_zsl2018_train_test_a_20180321/
+ai_challenger_zsl2018_train_test_b_20180321/
 *.state
 *.state_
 *.resnet*
