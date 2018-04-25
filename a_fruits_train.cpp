@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 
   constexpr auto initial_learning_rate = 0.1;
   pre_trained_net pnet;
-  dlib::deserialize("a_fruits_pre_train.resnet34") >> pnet;
+  dlib::deserialize("models/a_fruits_pre_train.resnet34") >> pnet;
   dlib::visit_layers_range<2, pre_trained_net::num_layers>(pnet, zero_learning_rate{});
   training_net net;
   dlib::layer<3>(net) = dlib::layer<2>(pnet);
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
   net.clean();
 
   std::cout << "Saving network..." << std::endl;
-  dlib::serialize("a_fruits_train.resnet34") << net;
+  dlib::serialize("models/a_fruits_train.resnet34") << net;
 
   std::cout << "Validating..." << std::endl;
   validator<58> v{net};

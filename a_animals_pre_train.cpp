@@ -76,6 +76,6 @@ int main(int argc, char* argv[]) {
   net.clean();
 
   std::cout << "Saving network..." << std::endl;
-  dlib::serialize("a_animals_pre_train.resnet34") << net;
+  dlib::serialize("models/a_animals_pre_train.resnet34") << net;
   return 0;
 }
