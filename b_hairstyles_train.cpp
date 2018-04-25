@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
   dlib::dnn_trainer<training_net> trainer(net, dlib::sgd{0.0001f, 0.9f});
   trainer.be_verbose();
   trainer.set_learning_rate(initial_learning_rate);
-  trainer.set_synchronization_file("b_hairstyles_train.state", std::chrono::minutes{10});
+  trainer.set_synchronization_file("states/b_hairstyles_train.state", std::chrono::minutes{10});
   trainer.set_iterations_without_progress_threshold(8000);
   set_all_bn_running_stats_window_sizes(net, 1000);
 
