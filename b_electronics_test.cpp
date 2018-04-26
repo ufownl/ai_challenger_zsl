@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
   k_means::point_cloud<float> points;
   points.reserve(images.size());
   testing_net net;
-  dlib::deserialize("b_electronics_train.resnet34") >> net;
+  dlib::deserialize("models/b_electronics_train.resnet34") >> net;
   dlib::rand rnd{std::time(nullptr)};
   for (auto& f: images) {
     dlib::matrix<dlib::rgb_pixel> img;
