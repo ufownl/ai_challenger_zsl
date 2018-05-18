@@ -2,7 +2,7 @@
 #define AI_CHALLENGER_ZSL_LOSS_MULTIATTR_HPP
 
 #include <dlib/dnn/core.h>
-#include <dlib/dnn/tensor_tools.h>
+#include <dlib/cuda/tensor_tools.h>
 #include <dlib/matrix.h>
 #include <iostream>
 #include <string>
